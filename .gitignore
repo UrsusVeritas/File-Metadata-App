@@ -1,0 +1,27 @@
+
+.DS_Store 
+Thumbs.db 
+*.log
+*.swp
+# Python
+__pycache__/
+*.py[co]
+.Python
+env/
+venv/ # Виртуальные окружения
+pip-log.txt
+.pytest_cache/
+# Terraform State Files and Local Config
+*.tfplan
+*.tfstate
+*.tfstate.backup 
+.terraform/       
+crash.log
+# Docker
+*.orig
+*.bak
+*.swp
+.idea/ # Конфигурации IDE
+# Jenkins / CI/CD 
+target/
+build/
