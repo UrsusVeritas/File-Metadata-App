@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  uploader-api:
+    build: ./app/uploader-api
+    ports:
+      - "5003:5000"
+    environment:
+      S3_BUCKET_NAME: "devops-local-test-bucket"
+
+  metadata-service:
+    build: ./app/metadata-service
+    ports:
+      - "5001:5000"
+
+  browser-api:
+    build: ./app/browser-api
+    ports:
+      - "5002:5000"
