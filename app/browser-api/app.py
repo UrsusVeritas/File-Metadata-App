@@ -8,7 +8,7 @@ def health_check():
 
 @app.route('/list', methods=['GET'])
 def list_files():
-    # PLACEHOLDER: Здесь будет логика запроса данных из DB
+    
     return jsonify({"files": [], "message": "List retrieval simulated", "service": "browser-api"}), 200
 
 if __name__ == '__main__':

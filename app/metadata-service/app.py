@@ -8,7 +8,7 @@ def health_check():
 
 @app.route('/process', methods=['POST'])
 def process_file():
-    # PLACEHOLDER: Здесь будет логика обработки SQS/DB
+    
     return jsonify({"message": "Processing simulated", "service": "metadata-service"}), 200
 
 if __name__ == '__main__':
