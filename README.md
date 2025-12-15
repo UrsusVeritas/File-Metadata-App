@@ -45,7 +45,7 @@ This final script represents the robust solution used for deployment.
 
 ```groovy
 // The complete and production-ready Jenkinsfile used for the CI/CD pipeline.
-def AWS_ACCOUNT_ID = '739623013312' 
+def AWS_ACCOUNT_ID = '**************' 
 def AWS_REGION = 'us-east-1'       
 def ECR_REPO = 'file-metadata-uploader-api'
 def ECR_IMAGE = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}[.amazonaws.com/$](https://.amazonaws.com/$){ECR_REPO}"
