@@ -1,0 +1,7 @@
+# Copy this file to terraform.tfvars and fill in your values.
+# terraform.tfvars is gitignored and should never be committed.
+
+# Restrict Jenkins SSH (port 22) and UI (port 8080) to your IP only.
+# Find your public IP at: https://checkip.amazonaws.com/
+# Format: "YOUR.IP.ADDRESS.HERE/32"
+allowed_cidr = "0.0.0.0/0"

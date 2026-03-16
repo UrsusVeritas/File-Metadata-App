@@ -14,9 +14,10 @@ pip-log.txt
 # Terraform State Files and Local Config
 *.tfplan
 *.tfstate
-*.tfstate.backup 
-.terraform/       
+*.tfstate.backup
+.terraform/
 crash.log
+terraform.tfvars
 # Docker
 *.orig
 *.bak
