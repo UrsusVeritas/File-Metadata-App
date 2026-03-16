@@ -32,6 +32,11 @@ pipeline {
     string(name: 'ECS_SERVICE_METADATA', defaultValue: 'metadata-service', description: 'ECS Service name for metadata-service')
     string(name: 'ECS_SERVICE_BROWSER',  defaultValue: 'browser-api-service', description: 'ECS Service name for browser-api')
 
+    // Smoke test URLs (set after ALB/DNS is configured)
+    string(name: 'UPLOADER_HEALTH_URL', defaultValue: '', description: 'Full URL for uploader-api /health (e.g. http://alb-dns/health)')
+    string(name: 'METADATA_HEALTH_URL', defaultValue: '', description: 'Full URL for metadata-service /health')
+    string(name: 'BROWSER_HEALTH_URL',  defaultValue: '', description: 'Full URL for browser-api /health')
+
     // Switches
     booleanParam(name: 'DO_DEPLOY', defaultValue: true, description: 'If true, force new deployment on ECS services')
   }
@@ -102,26 +107,26 @@ pipeline {
           pip -V
         '''
 
-        // Run tests for each service if they exist
+        // Run tests for each service
         dir('app/uploader-api') {
           sh '''
             set -e
             pip install --no-cache-dir -r requirements.txt
-            python -m unittest discover -v || true
+            python -m unittest discover -s tests -v
           '''
         }
         dir('app/metadata-service') {
           sh '''
             set -e
             pip install --no-cache-dir -r requirements.txt
-            python -m unittest discover -v || true
+            python -m unittest discover -s tests -v
           '''
         }
         dir('app/browser-api') {
           sh '''
             set -e
             pip install --no-cache-dir -r requirements.txt
-            python -m unittest discover -v || true
+            python -m unittest discover -s tests -v
           '''
         }
       }
@@ -210,6 +215,34 @@ pipeline {
           rollout "${ECS_SERVICE_BROWSER}"
 
           echo "All services stable. Deployment finished."
+        '''
+      }
+    }
+
+    stage('Smoke Tests') {
+      when { expression { return params.DO_DEPLOY && params.UPLOADER_HEALTH_URL != '' } }
+      steps {
+        sh '''
+          set -e
+          echo "== Smoke tests: /health endpoints =="
+
+          check_health () {
+            local url="$1"
+            local label="$2"
+            echo "Checking $label at $url"
+            status=$(curl -sf -o /dev/null -w "%{http_code}" "$url" || echo "000")
+            if [ "$status" != "200" ]; then
+              echo "FAIL: $label returned HTTP $status"
+              exit 1
+            fi
+            echo "OK: $label is healthy (HTTP 200)"
+          }
+
+          check_health "${UPLOADER_HEALTH_URL}" "uploader-api"
+          check_health "${METADATA_HEALTH_URL}" "metadata-service"
+          check_health "${BROWSER_HEALTH_URL}"  "browser-api"
+
+          echo "All smoke tests passed."
         '''
       }
     }
